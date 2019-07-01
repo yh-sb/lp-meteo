@@ -22,7 +22,12 @@ const static uint16_t timeout[WAIT_BIT_CHECK + 1] =
 	40,    // WAIT_RESP_START
 	90,    // WAIT_RESP_END
 	90,    // WAIT_BIT_START_LOW
-	54,    // WAIT_BIT_START_HI
+	
+	/* Normally this timeout should be 50 us, but DHT22 keeps the data line low
+	   for 67 us after each byte. Therefore, increase this timeout to avoid
+	   RES_READERR error */
+	67,    // WAIT_BIT_START_HI
+	
 	35     // WAIT_BIT_CHECK
 };
 
@@ -44,7 +49,7 @@ singlewire::~singlewire()
 int8_t singlewire::read(uint8_t *buff, uint16_t size)
 {
 	if(!_gpio.get())
-		return BUSY;
+		return RES_BUSY;
 	
 	task = xTaskGetCurrentTaskHandle();
 	fsm_start(buff, size);
@@ -86,7 +91,7 @@ void singlewire::fsm_run(bool is_tim_expired)
 			if(is_tim_expired)
 			{
 				_exti.off();
-				res = NODEV;
+				res = RES_NODEV;
 				goto Exit;
 			}
 			_tim.stop();
@@ -101,7 +106,7 @@ void singlewire::fsm_run(bool is_tim_expired)
 			if(is_tim_expired)
 			{
 				_exti.off();
-				res = DEVERR;
+				res = RES_DEVERR;
 				goto Exit;
 			}
 			_tim.stop();
@@ -116,7 +121,7 @@ void singlewire::fsm_run(bool is_tim_expired)
 			if(is_tim_expired)
 			{
 				_exti.off();
-				res = READERR;
+				res = RES_READERR;
 				goto Exit;
 			}
 			_tim.stop();
@@ -131,7 +136,7 @@ void singlewire::fsm_run(bool is_tim_expired)
 			if(is_tim_expired)
 			{
 				_exti.off();
-				res = READERR;
+				res = RES_READERR;
 				goto Exit;
 			}
 			_tim.stop();
@@ -175,7 +180,7 @@ void singlewire::fsm_run(bool is_tim_expired)
 				{
 					_tim.stop();
 					_exti.off();
-					res = OK;
+					res = RES_OK;
 					goto Exit;
 				}
 			}
