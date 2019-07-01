@@ -1,15 +1,7 @@
 #include <string.h>
-
-#include "rtc/rtc.hpp"
-
 #include "ui.hpp"
-#include "drv/dht11/dht11.hpp"
-#include "drv/ds18b20/ds18b20.hpp"
+#include "rtc/rtc.hpp"
 #include "ul/syslog/syslog.hpp"
-#include "third_party/printf/printf.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
 
 void task::ui(void *pvParameters)
 {
@@ -27,8 +19,15 @@ void task::ui(void *pvParameters)
 		{
 			case CMD_DHT11:
 				ctx->lcd->ddram_addr(0);
-				if(queue.dht11.res == drv::dht11::RES_OK)
-					ctx->lcd->print("%02d %%", queue.dht11.rh);
+				if(queue.dht11.res == drv::dht::RES_OK)
+				{
+					ctx->lcd->print("%02d,%d %%", queue.dht11.val.rh_x10 / 10,
+						queue.dht11.val.rh_x10 % 10);
+					
+					char sign = (queue.dht11.val.t_x10 >= 0) ? '+' : '-';
+					ctx->lcd->print("  %c%02d,%d C", sign,
+						queue.dht11.val.t_x10 / 10, queue.dht11.val.t_x10 % 10);
+				}
 				else
 				{
 					log().err("DHT11: res=%d", queue.dht11.res);

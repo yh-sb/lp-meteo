@@ -1,7 +1,6 @@
 #pragma once
 
 #include "drv/ds18b20/ds18b20.hpp"
-
 #include "FreeRTOS.h"
 #include "queue.h"
 
@@ -19,7 +18,7 @@ struct ds18b20_ctx_t
 
 void ds18b20(void *pvParameters);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
-#endif 
+#endif
 }

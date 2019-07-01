@@ -1,11 +1,8 @@
 #pragma once
 
-#include "gpio/gpio.hpp"
-
-#include "drv/dht11/dht11.hpp"
+#include "drv/dht/dht.hpp"
 #include "drv/ds18b20/ds18b20.hpp"
 #include "drv/hd44780/hd44780.hpp"
-
 #include "FreeRTOS.h"
 #include "queue.h"
 
@@ -24,8 +21,7 @@ enum ui_cmd_t
 struct dht_data_t
 {
     int8_t res;
-    uint8_t rh;
-    uint8_t t;
+    drv::dht::val_t val;
 };
 
 struct ds18b20_data_t

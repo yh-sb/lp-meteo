@@ -1,7 +1,6 @@
 #pragma once
 
-#include "drv/dht11/dht11.hpp"
-
+#include "drv/dht/dht.hpp"
 #include "FreeRTOS.h"
 #include "queue.h"
 
@@ -14,12 +13,12 @@ extern "C" {
 struct dht11_ctx_t
 {
     xQueueHandle to_ui;
-    drv::dht11 *_dht11;
+    drv::dht *dht11;
 };
 
 void dht11(void *pvParameters);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
-#endif 
+#endif
 }
