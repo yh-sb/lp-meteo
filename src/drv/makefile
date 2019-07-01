@@ -1,7 +1,6 @@
 -include ../../config.mk
 
-SRC := dht11/dht11.cpp \
-	dht22/dht22.cpp \
+SRC := dht/dht.cpp \
 	di/di.cpp \
 	ds18b20/ds18b20.cpp \
 	hd44780/hd44780.cpp \

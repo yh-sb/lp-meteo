@@ -12,7 +12,7 @@
 #include "wdt/wdt.hpp"
 
 #include "drv/singlewire/singlewire.hpp"
-#include "drv/dht11/dht11.hpp"
+#include "drv/dht/dht.hpp"
 #include "drv/di/di.hpp"
 #include "drv/onewire/onewire.hpp"
 #include "drv/ds18b20/ds18b20.hpp"
@@ -107,7 +107,7 @@ int main(void)
 	static drv::hd44780 lcd(rs, rw, e, db4, db5, db6, db7, hd44780_tim);
 	
 	static drv::singlewire dht11_singlewire(dht11_gpio, dht11_tim, dht11_exti);
-	static drv::dht11 _dht11(dht11_singlewire);
+	static drv::dht dht11(dht11_singlewire, drv::dht::DHT11);
 	
 	static dma uart2_tx_dma(dma::dma_t::DMA_1, dma::stream_t::STREAM_6,
 		dma::ch_t::CH_4, dma::dir_t::DIR_MEM_TO_PERIPH, dma::inc_size_t::INC_SIZE_8);
@@ -154,7 +154,7 @@ int main(void)
 		{.to_ui = ui_queue, .lcd = &lcd};
 	
 	static task::dht11_ctx_t dht11_ctx =
-		{.to_ui = ui_queue, ._dht11 = &_dht11};
+		{.to_ui = ui_queue, .dht11 = &dht11};
 	
 	static task::ds18b20_ctx_t ds18b20_ctx =
 		{.to_ui = ui_queue, ._ds18b20 = &_ds18b20};
