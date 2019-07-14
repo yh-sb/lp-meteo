@@ -4,6 +4,7 @@ SRC := dht/dht.cpp \
 	di/di.cpp \
 	ds18b20/ds18b20.cpp \
 	hd44780/hd44780.cpp \
+	gps/nmea.cpp \
 	onewire/onewire.cpp \
 	sd/sd_spi.cpp \
 	sd/sd.cpp \
