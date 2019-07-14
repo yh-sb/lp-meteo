@@ -1,8 +1,9 @@
 -include ../../config.mk
 
-SRC := ui.cpp \
-	dht11.cpp \
-	ds18b20.cpp
+SRC := dht11.cpp \
+	ds18b20.cpp \
+	gps.cpp \
+	ui.cpp
 
 INC :=
 

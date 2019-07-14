@@ -17,6 +17,7 @@
 #include "drv/onewire/onewire.hpp"
 #include "drv/ds18b20/ds18b20.hpp"
 #include "drv/hd44780/hd44780.hpp"
+#include "drv/gps/nmea.hpp"
 #include "drv/sd/sd_spi.hpp"
 
 #include "ul/syslog/syslog.hpp"
@@ -26,7 +27,7 @@
 #include "task/ui.hpp"
 #include "task/dht11.hpp"
 #include "task/ds18b20.hpp"
-
+#include "task/gps.hpp"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -58,13 +59,6 @@ static void safety_task(void *pvParameters)
 		vTaskDelay(500);
 	}
 }
-
-/* static void uart_write(uint8_t *buff, size_t size, void *ctx)
-{
-	uart *uart3 = (uart *)ctx;
-	
-	uart3->write(buff, size);
-} */
 
 int main(void)
 {
@@ -113,10 +107,10 @@ int main(void)
 		dma::ch_t::CH_4, dma::dir_t::DIR_MEM_TO_PERIPH, dma::inc_size_t::INC_SIZE_8);
 	static dma uart2_rx_dma(dma::dma_t::DMA_1, dma::stream_t::STREAM_5,
 		dma::ch_t::CH_4, dma::dir_t::DIR_PERIPH_TO_MEM, dma::inc_size_t::INC_SIZE_8);
-	/* static dma uart3_tx_dma(dma::dma_t::DMA_1, dma::stream_t::STREAM_3,
+	static dma uart3_tx_dma(dma::dma_t::DMA_1, dma::stream_t::STREAM_3,
 		dma::ch_t::CH_4, dma::dir_t::DIR_MEM_TO_PERIPH, dma::inc_size_t::INC_SIZE_8);
 	static dma uart3_rx_dma(dma::dma_t::DMA_1, dma::stream_t::STREAM_1,
-		dma::ch_t::CH_4, dma::dir_t::DIR_PERIPH_TO_MEM, dma::inc_size_t::INC_SIZE_8); */
+		dma::ch_t::CH_4, dma::dir_t::DIR_PERIPH_TO_MEM, dma::inc_size_t::INC_SIZE_8);
 	
 	static dma spi2_rx_dma(dma::DMA_2, dma::STREAM_3, dma::CH_0,
 		dma::DIR_PERIPH_TO_MEM, dma::INC_SIZE_8);
@@ -125,8 +119,8 @@ int main(void)
 	
 	static uart uart2(uart::UART_2, 115200, uart::STOPBIT_1, uart::PARITY_NONE,
 		uart2_tx_dma, uart2_rx_dma, uart2_tx_gpio, uart2_rx_gpio);
-	/* static uart uart3(uart::UART_3, 115200, uart::STOPBIT_1, uart::PARITY_NONE,
-		uart3_tx_dma, uart3_rx_dma, uart3_tx_gpio, uart3_rx_gpio); */
+	static uart uart3(uart::UART_3, 9600, uart::STOPBIT_1, uart::PARITY_NONE,
+		uart3_tx_dma, uart3_rx_dma, uart3_tx_gpio, uart3_rx_gpio);
 	
 	static spi spi2(spi::SPI_2, 1000000, spi::CPOL_0, spi::CPHA_0,
 		spi::BIT_ORDER_MSB, spi2_tx_dma, spi2_rx_dma, spi2_mosi, spi2_miso,
@@ -142,16 +136,14 @@ int main(void)
 	static drv::onewire _onewire(uart2);
 	static drv::ds18b20 _ds18b20(_onewire);
 	
+	static drv::nmea gps(uart3, tskIDLE_PRIORITY + 1);
+	
 	ul::fatfs_diskio_add(0, sd1);
-	//log().add_output(uart_write, &uart3);
 	
 	QueueHandle_t ui_queue = xQueueCreate(1, sizeof(task::ui_queue_t));
 	ASSERT(ui_queue);
 	
 	static const drv::di *di_ctx[] = {&b1_di, &cd_di};
-	
-	static task::ui_ctx_t ui_ctx =
-		{.to_ui = ui_queue, .lcd = &lcd};
 	
 	static task::dht11_ctx_t dht11_ctx =
 		{.to_ui = ui_queue, .dht11 = &dht11};
@@ -159,20 +151,29 @@ int main(void)
 	static task::ds18b20_ctx_t ds18b20_ctx =
 		{.to_ui = ui_queue, ._ds18b20 = &_ds18b20};
 	
+	static task::gps_ctx_t gps_ctx =
+		{.nmea = &gps, .lcd = &lcd};
+	
+	static task::ui_ctx_t ui_ctx =
+		{.to_ui = ui_queue, .lcd = &lcd};
+	
 	ASSERT(xTaskCreate(safety_task, "safety", configMINIMAL_STACK_SIZE * 1,
 		&green_led, tskIDLE_PRIORITY + 5, NULL) == pdPASS);
 	
 	ASSERT(xTaskCreate(di_task, "di", configMINIMAL_STACK_SIZE * 10,
 		di_ctx, tskIDLE_PRIORITY + 4, NULL));
 	
-	ASSERT(xTaskCreate(task::ui, "ui", configMINIMAL_STACK_SIZE * 8,
-		&ui_ctx, tskIDLE_PRIORITY + 3, NULL) == pdPASS);
-	
 	ASSERT(xTaskCreate(task::dht11, "dht11", configMINIMAL_STACK_SIZE * 2,
 		&dht11_ctx, tskIDLE_PRIORITY + 2, NULL) == pdPASS);
 	
 	ASSERT(xTaskCreate(task::ds18b20, "ds18b20", configMINIMAL_STACK_SIZE * 2,
 		&ds18b20_ctx, tskIDLE_PRIORITY + 1, NULL) == pdPASS);
+	
+	ASSERT(xTaskCreate(task::gps, "gps", configMINIMAL_STACK_SIZE * 10,
+		&gps_ctx, tskIDLE_PRIORITY + 1, NULL) == pdPASS);
+	
+	ASSERT(xTaskCreate(task::ui, "ui", configMINIMAL_STACK_SIZE * 8,
+		&ui_ctx, tskIDLE_PRIORITY + 3, NULL) == pdPASS);
 	
 	vTaskStartScheduler();
 }
