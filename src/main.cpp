@@ -1,8 +1,4 @@
-
-#include <string.h>
-
 #include "common/assert.h"
-
 #include "gpio/gpio.hpp"
 #include "uart/uart.hpp"
 #include "tim/tim.hpp"
@@ -10,7 +6,6 @@
 #include "rtc/rtc.hpp"
 #include "spi/spi.hpp"
 #include "wdt/wdt.hpp"
-
 #include "drv/singlewire/singlewire.hpp"
 #include "drv/dht/dht.hpp"
 #include "drv/di/di.hpp"
@@ -19,15 +14,12 @@
 #include "drv/hd44780/hd44780.hpp"
 #include "drv/gps/nmea.hpp"
 #include "drv/sd/sd_spi.hpp"
-
-#include "ul/syslog/syslog.hpp"
 #include "ul/fatfs_diskio/fatfs_diskio.hpp"
 #include "third_party/FatFs/ff.h"
-
-#include "task/ui.hpp"
 #include "task/dht11.hpp"
 #include "task/ds18b20.hpp"
 #include "task/gps.hpp"
+#include "task/ui.hpp"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -66,11 +58,10 @@ int main(void)
 	//wdt::on();
 	
 	rtc::init(rtc::CLK_LSI);
-	rtc::time_t time =
-	{
-		.year = 19, .month = 1, .day = 1, .wday = 1, .h = 10, .m = 31, .s = 7
-	};
-	rtc::set(&time);
+	struct tm time = {};
+	time.tm_year = 119;
+	time.tm_mday = 1;
+	rtc::set(time);
 	
 	static gpio b1(0, 0, gpio::MODE_DI, 0);
 	static gpio green_led(3, 12, gpio::MODE_DO, 0);
