@@ -12,7 +12,7 @@ extern "C" {
 
 struct dht11_ctx_t
 {
-    xQueueHandle to_ui;
+    QueueHandle_t to_ui;
     drv::dht *dht11;
 };
 

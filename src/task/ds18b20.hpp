@@ -12,7 +12,7 @@ extern "C" {
 
 struct ds18b20_ctx_t
 {
-    xQueueHandle to_ui;
+    QueueHandle_t to_ui;
     drv::ds18b20 *_ds18b20;
 };
 
