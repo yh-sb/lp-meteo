@@ -42,7 +42,7 @@ struct ui_queue_t
 
 struct ui_ctx_t
 {
-    xQueueHandle to_ui;
+    QueueHandle_t to_ui;
     drv::hd44780 *lcd;
 };
 

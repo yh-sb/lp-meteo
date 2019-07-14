@@ -7,6 +7,7 @@
 #include "gpio/gpio.hpp"
 #include "tim/tim.hpp"
 #include "FreeRTOS.h"
+#include "semphr.h"
 #include "task.h"
 
 namespace drv
@@ -21,10 +22,27 @@ class hd44780
 		
 		void init();
 		
-		void print(const char *format, ...);
-		void print(char byte);
+		/**
+		 * @brief Print formatted text
+		 * 
+		 * @param ddram_addr DDRAM address to which text will be writed.
+		 *                   Example for 4 line display: 0 - 1st line,
+		 *                   64 - 2nd line, 20 - 3rd line, 84 - 4th line
+		 * @param format A string that specifies the format of the output
+		 * @param ... Arguments used by format string
+		 * @return uint8_t New DDRAM address after writing
+		 */
+		uint8_t print(uint8_t ddram_addr, const char *format, ...);
 		
-		void ddram_addr(uint8_t addr);
+		/**
+		 * @brief Print one byte
+		 * 
+		 * @param ddram_addr DDRAM address to which text will be writed
+		 * @param byte ASCII symbol
+		 * @return uint8_t New DDRAM address after writing
+		 */
+		uint8_t print(uint8_t ddram_addr, char byte);
+		
 		uint8_t ddram_addr();
 		
 		void write_cgram(uint8_t buff[8][8]);
@@ -39,6 +57,7 @@ class hd44780
 		hal::gpio *_db[4];
 		hal::tim &_tim;
 		TaskHandle_t task;
+		SemaphoreHandle_t api_lock;
 		
 		enum write_t
 		{
