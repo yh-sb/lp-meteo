@@ -1,3 +1,4 @@
+#include "common/assert.h"
 #include "include/FreeRTOS.h"
 #include "include/task.h"
 
@@ -25,10 +26,10 @@ void vApplicationTickHook(void)
 
 void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
 {
-	while(1);
+	ASSERT(0);
 }
 
 void vApplicationMallocFailedHook(void)
 {
-	while(1);
+	ASSERT(0);
 }
