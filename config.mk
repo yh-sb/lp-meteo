@@ -103,7 +103,7 @@ define MKDIR
 
 endef
 define RMDIR
-@rm -r "$(1)"
+@rm -rf "$(1)"
 
 endef
 define RM
