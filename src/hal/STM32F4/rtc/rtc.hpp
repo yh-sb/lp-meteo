@@ -4,6 +4,10 @@
 #include <stddef.h>
 #include <time.h>
 
+namespace hal { class rtc; }
+// For internal use only! (called from ISR)
+extern "C" void rtc_irq_hndlr();
+
 namespace hal
 {
 class rtc
@@ -38,7 +42,7 @@ class rtc
 		 *
 		 * @return     0 in case of success, otherwise - negative value
 		 */
-		static int8_t set(struct tm time);
+		static int8_t set(struct tm &time);
 		
 		/**
 		 * @brief      Write the array into the backup registers
@@ -57,9 +61,15 @@ class rtc
 		 * @param[in]     size  Size of the buffer, which should be filled
 		 */
 		static void bckp_read(uint8_t addr, void *buff, size_t size);
-	
-	private:
+		
+		typedef void (*cb_t)(struct tm time, void *ctx);
+		
+		static void set_alarm_cb(cb_t cb, void *ctx);
+		static void set_alarm(struct tm time);
+		
 		static bool is_valid(struct tm &time);
-		rtc() {}
+	private:
+		rtc() {};
+		friend void ::rtc_irq_hndlr();
 };
 };
