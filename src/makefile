@@ -1,6 +1,7 @@
 -include ../config.mk
 
-SRC := main.cpp
+SRC := main.cpp \
+	dot_matrix_font.cpp
 
 INC :=
 

@@ -9,6 +9,7 @@
 #include "drv/dht/dht.hpp"
 #include "drv/onewire/onewire.hpp"
 #include "drv/ds18b20/ds18b20.hpp"
+#include "drv/dot_matrix/dot_matrix.hpp"
 #include "drv/gps/nmea.hpp"
 #include "task/dht11.hpp"
 #include "task/ds18b20.hpp"
@@ -16,6 +17,7 @@
 #include "task/ui.hpp"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "dot_matrix_font.cpp"
 
 using namespace hal;
 
@@ -48,6 +50,15 @@ int main(void)
 	static gpio uart2_rx_gpio(0, 3, gpio::MODE_AF, 0);
 	static gpio uart3_tx_gpio(3, 8, gpio::MODE_AF, 0);
 	static gpio uart3_rx_gpio(1, 11, gpio::MODE_AF, 0);
+	static gpio shift_reg_bit0(4, 10, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit1(4, 9, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit2(4, 7, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit3(4, 8, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit4(4, 13, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit5(4, 14, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit6(4, 12, gpio::MODE_DO, 1);
+	static gpio shift_reg_bit7(4, 11, gpio::MODE_DO, 1);
+	static gpio shift_reg_clk(4, 15, gpio::MODE_DO, 1);
 	
 	static tim dht11_tim(tim::TIM_7);
 	
@@ -75,20 +86,29 @@ int main(void)
 	
 	static drv::nmea gps(uart3, tskIDLE_PRIORITY + 1);
 	
-	QueueHandle_t ui_queue = xQueueCreate(1, sizeof(task::ui_queue_t));
+	hal::gpio *shift_reg_bits[] =
+	{
+		&shift_reg_bit0, &shift_reg_bit1, &shift_reg_bit2,
+		&shift_reg_bit3, &shift_reg_bit4, &shift_reg_bit5,
+		&shift_reg_bit6, &shift_reg_bit7
+	};
+	static drv::dot_matrix matrix(8, 80, shift_reg_bits, shift_reg_clk, true);
+	
+	matrix.load_symbols(dot_matrix_font, sizeof(dot_matrix_font) /
+		sizeof(dot_matrix_font[0]));
+	
+	QueueHandle_t ui_queue = xQueueCreate(2, sizeof(task::ui_queue_t));
 	ASSERT(ui_queue);
 	
-	static const drv::di *di_ctx[] = {&b1_di, &cd_di};
+	static task::dht11_ctx_t dht11_ctx = {.to_ui = ui_queue, .dht11 = &dht11};
 	
-	static task::dht11_ctx_t dht11_ctx =
-		{.to_ui = ui_queue, .dht11 = &dht11};
-	
-	static task::ds18b20_ctx_t ds18b20_ctx =
-		{.to_ui = ui_queue, ._ds18b20 = &_ds18b20};
+	static task::ds18b20_ctx_t ds18b20_ctx = {.to_ui = ui_queue,
+		._ds18b20 = &_ds18b20};
 	
 	static task::gps_ctx_t gps_ctx = {.nmea = &gps};
 	
-	static task::ui_ctx_t ui_ctx = {.to_ui = ui_queue};
+	static task::ui_ctx_t ui_ctx = {.to_ui = ui_queue,
+		.matrix = &matrix};
 	
 	ASSERT(xTaskCreate(safety_task, "safety", configMINIMAL_STACK_SIZE * 1,
 		&green_led, tskIDLE_PRIORITY + 5, NULL) == pdPASS);

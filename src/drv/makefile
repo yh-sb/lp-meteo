@@ -2,6 +2,7 @@
 
 SRC := dht/dht.cpp \
 	di/di.cpp \
+	dot_matrix/dot_matrix.cpp \
 	ds18b20/ds18b20.cpp \
 	hd44780/hd44780.cpp \
 	gps/nmea.cpp \
