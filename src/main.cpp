@@ -105,8 +105,5 @@ int main(void)
 	ASSERT(xTaskCreate(task::ui, "ui", configMINIMAL_STACK_SIZE * 9,
 		&ui_ctx, tskIDLE_PRIORITY + 1, NULL) == pdPASS);
 	
-	ASSERT(xTaskCreate(task::ui, "ui", configMINIMAL_STACK_SIZE * 8,
-		&ui_ctx, tskIDLE_PRIORITY + 3, NULL) == pdPASS);
-	
 	vTaskStartScheduler();
 }
