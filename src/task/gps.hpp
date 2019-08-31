@@ -14,7 +14,6 @@ extern "C" {
 struct gps_ctx_t
 {
     drv::nmea *nmea;
-    drv::hd44780 *lcd;
 };
 
 void gps(void *pvParameters);

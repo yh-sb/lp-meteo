@@ -142,8 +142,7 @@ int main(void)
 	static task::ds18b20_ctx_t ds18b20_ctx =
 		{.to_ui = ui_queue, ._ds18b20 = &_ds18b20};
 	
-	static task::gps_ctx_t gps_ctx =
-		{.nmea = &gps, .lcd = &lcd};
+	static task::gps_ctx_t gps_ctx = {.nmea = &gps};
 	
 	static task::ui_ctx_t ui_ctx =
 		{.to_ui = ui_queue, .lcd = &lcd};
