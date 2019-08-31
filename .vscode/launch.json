@@ -13,7 +13,6 @@
 			"externalConsole": true,
 			"internalConsoleOptions": "neverOpen",
 			"stopAtEntry": true,
-			"preLaunchTask": "gdbserver",
 			"setupCommands":
 			[
 				{
