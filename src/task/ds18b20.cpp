@@ -11,9 +11,17 @@ void task::ds18b20(void *pvParameters)
 	
 	while(1)
 	{
-		queue.cmd = CMD_DS18B20;
-		queue.ds18b20.err = _ds18b20->get_temp(0, &queue.ds18b20.t);
+		int res = _ds18b20->get_temp(0, &queue.t);
 		
+		/* TODO: fix wrong value of temperature sensor when its power is lost
+		   (value is always 85) */
+		if(res || queue.t > 70 || queue.t < -50)
+		{
+			//log().err("ds18b20: res=%d", res);
+			continue;
+		}
+		
+		queue.cmd = CMD_DS18B20;
 		xQueueSend(ctx->to_ui, &queue, portMAX_DELAY);
 	}
 }

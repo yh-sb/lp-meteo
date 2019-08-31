@@ -9,11 +9,14 @@ void task::dht11(void *pvParameters)
 	
 	while(1)
 	{
-		queue.cmd = CMD_DHT11;
-		drv::dht::val_t val = {};
-		queue.dht11.res = dht11->get(&val);
-		queue.dht11.val = val;
+		int res = dht11->get(&queue.dht);
+		if(res)
+		{
+			//log().err("DHT11: res=%d", res);
+			continue;
+		}
 		
+		queue.cmd = CMD_DHT11;
 		xQueueSend(ctx->to_ui, &queue, portMAX_DELAY);
 	}
 }
