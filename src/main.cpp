@@ -47,15 +47,15 @@ static void safety_task(void *pvParameters)
 	while(1)
 	{
 		green_led->toggle();
-		//wdt::reload();
+		wdt::reload();
 		vTaskDelay(500);
 	}
 }
 
 int main(void)
 {
-	//wdt::init(1000);
-	//wdt::on();
+	wdt::init(1000);
+	wdt::on();
 	
 	rtc::init(rtc::CLK_LSI);
 	struct tm time = {};
