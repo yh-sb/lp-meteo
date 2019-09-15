@@ -122,9 +122,9 @@ void hd44780::init()
 
 uint8_t hd44780::print(uint8_t ddram_addr, const char *format, ...)
 {
+	ASSERT(format);
 	ASSERT((ddram_addr >= DDRAM1_MIN_ADDR && ddram_addr <= DDRAM1_MAX_ADDR) ||
 		(ddram_addr >= DDRAM2_MIN_ADDR && ddram_addr <= DDRAM2_MAX_ADDR));
-	// TODO: try to pass format=NULL. Do we need ASSERT for format?
 	
 	xSemaphoreTake(api_lock, portMAX_DELAY);
 	
@@ -134,7 +134,7 @@ uint8_t hd44780::print(uint8_t ddram_addr, const char *format, ...)
 	
 	va_start(args, format);
 	
-	char message[200] = {};
+	char message[DDRAM2_MAX_ADDR] = {};
 	uint8_t new_ddram_addr = vsnprintf_(message, sizeof(message) - 1,
 		format, args) + ddram_addr;
 	
