@@ -160,7 +160,7 @@ static traceHandle isr_dma_tx, isr_dma_rx, isr_i2c_event, isr_i2c_error;
 #endif
 
 // TODO: for debug
-static traceString ch1;
+//static traceString ch1;
 
 i2c::i2c(i2c_t i2c, uint32_t baud, dma &dma_tx, dma &dma_rx, gpio &sda,
 	gpio &scl):
@@ -438,16 +438,10 @@ void i2c::on_dma_tx(dma *dma, dma::event_t event, void *ctx)
 	
 	if(event == dma::EVENT_CMPLT)
 	{
-		// TODO: for debug
-		vTracePrint(ch1, "tx_hndlr");
-		
 		tx_hndlr(obj, &hi_task_woken);
 	}
 	else if(event == dma::EVENT_ERROR)
 	{
-		// TODO: for debug
-		vTracePrint(ch1, "err_hndlr");
-		
 		err_hndlr(obj, RES_TX_FAIL, &hi_task_woken);
 	}
 #if configUSE_TRACE_FACILITY
@@ -467,16 +461,10 @@ void i2c::on_dma_rx(dma *dma, dma::event_t event, void *ctx)
 	
 	if(event == dma::EVENT_CMPLT)
 	{
-		// TODO: for debug
-		vTracePrint(ch1, "rx_hndlr");
-		
 		rx_hndlr(obj, &hi_task_woken);
 	}
 	else if(event == dma::EVENT_ERROR)
 	{
-		// TODO: for debug
-		vTracePrint(ch1, "err_hndlr");
-		
 		err_hndlr(obj, RES_RX_FAIL, &hi_task_woken);
 	}
 #if configUSE_TRACE_FACILITY
@@ -556,9 +544,6 @@ extern "C" void i2c_event_irq_hndlr(i2c *obj)
 	
 	if(sr1 & I2C_SR1_SB)
 	{
-		// TODO: for debug
-		vTracePrint(ch1, "send address");
-		
 		/* Start condition is sent. Need to send device address */
 		i2c_base->DR = (obj->_addr << 1) | (obj->tx_buff ? 0 : 1);
 	}
@@ -568,9 +553,6 @@ extern "C" void i2c_event_irq_hndlr(i2c *obj)
 		/* Device address is sent. Need to send/receive data */
 		if(obj->tx_buff)
 		{
-			// TODO: for debug
-			vTracePrint(ch1, "start tx dma");
-			
 			obj->tx_dma.src(obj->tx_buff);
 			obj->tx_dma.size(obj->tx_size);
 			obj->tx_dma.start_once(obj->on_dma_tx, obj);
@@ -581,9 +563,6 @@ extern "C" void i2c_event_irq_hndlr(i2c *obj)
 				i2c_base->CR1 |= I2C_CR1_ACK;
 			else
 				i2c_base->CR1 &= ~I2C_CR1_ACK;
-			
-			// TODO: for debug
-			vTracePrint(ch1, "start rx dma");
 			
 			obj->rx_dma.dst(obj->rx_buff);
 			obj->rx_dma.size(obj->rx_size);
@@ -613,15 +592,8 @@ extern "C" void i2c_error_irq_hndlr(i2c *obj)
 #endif
 	BaseType_t hi_task_woken = 0;
 	
-	
-	// TODO: for debug
-	vTracePrint(ch1, "Error irq");
-	
 	if(sr1 & I2C_SR1_AF)
 	{
-		// TODO: for debug
-		vTracePrint(ch1, "AF irq");
-		
 		/* Error: no ACK from device */
 		i2c_base->SR1 &= ~I2C_SR1_AF;
 		err_hndlr(obj, i2c::RES_NO_ACK, &hi_task_woken);
