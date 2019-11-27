@@ -1,4 +1,5 @@
 #include <string.h>
+#include <math.h>
 #include "ui.hpp"
 #include "rtc/rtc.hpp"
 #include "ul/syslog/syslog.hpp"
@@ -76,16 +77,21 @@ void task::ui(void *pvParameters)
 
 static void print_temp(drv::dot_matrix &matrix, float t)
 {
-	char sign = ' ';
-	if(t >= 1)
-		sign = '+';
-	else if(t <= -1)
-		sign = '-';
-	
 	const char *format = "%d,%01d""\xF8""C";
 	
 	int integer = (int)t;
 	int decimal = (t - integer) * 10;
+	
+	char sign = ' ';
+	if(integer > 0 || decimal > 0)
+		sign = '+';
+	else if(integer < 0 || decimal < 0)
+	{
+		sign = '-';
+		integer = abs(integer);
+		decimal = abs(decimal);
+	}
+	
 	size_t x = matrix.get_size(format, integer, decimal).x_size;
 	if(sign != ' ')
 		x += matrix.get_size("%c", sign).x_size;
