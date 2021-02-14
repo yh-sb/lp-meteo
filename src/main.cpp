@@ -110,19 +110,19 @@ int main(void)
 	static task::ui_ctx_t ui_ctx = {.to_ui = ui_queue,
 		.matrix = &matrix};
 	
-	ASSERT(xTaskCreate(safety_task, "safety", configMINIMAL_STACK_SIZE * 1,
+	ASSERT(xTaskCreate(safety_task, "safety", configMINIMAL_STACK_SIZE,
 		&green_led, tskIDLE_PRIORITY + 5, NULL) == pdPASS);
 	
-	ASSERT(xTaskCreate(task::dht11, "dht11", configMINIMAL_STACK_SIZE * 3,
+	ASSERT(xTaskCreate(task::dht11, "dht11", configMINIMAL_STACK_SIZE,
 		&dht11_ctx, tskIDLE_PRIORITY + 4, NULL) == pdPASS);
 	
-	ASSERT(xTaskCreate(task::ds18b20, "ds18b20", configMINIMAL_STACK_SIZE * 3,
+	ASSERT(xTaskCreate(task::ds18b20, "ds18b20", configMINIMAL_STACK_SIZE,
 		&ds18b20_ctx, tskIDLE_PRIORITY + 3, NULL) == pdPASS);
 	
-	ASSERT(xTaskCreate(task::gps, "gps", configMINIMAL_STACK_SIZE * 11,
+	ASSERT(xTaskCreate(task::gps, "gps", configMINIMAL_STACK_SIZE + 60,
 		&gps_ctx, tskIDLE_PRIORITY + 2, NULL) == pdPASS);
 	
-	ASSERT(xTaskCreate(task::ui, "ui", configMINIMAL_STACK_SIZE * 9,
+	ASSERT(xTaskCreate(task::ui, "ui", configMINIMAL_STACK_SIZE + 50,
 		&ui_ctx, tskIDLE_PRIORITY + 1, NULL) == pdPASS);
 	
 	vTaskStartScheduler();
