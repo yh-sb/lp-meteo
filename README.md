@@ -1,7 +1,7 @@
 # lp-meteo
 Lviv Polytechnic meteostation
 
-![alt text](https://github.com/r44083/lp-meteo/image.jpg)
+![](https://github.com/r44083/lp-meteo/blob/master/image.jpg)
 
 https://github.com/r44083/lp-meteo
 
