@@ -3,16 +3,15 @@
 	"configurations":
 	[
 		{
-			"name": "omef",
+			"name": "arm",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/build/bin/${workspaceRootFolderName}.elf",
-			"windows": {"miDebuggerPath": "arm-none-eabi-gdb.exe"},
-			"linux": {"miDebuggerPath": "arm-none-eabi-gdb"},
+			"program": "${workspaceFolder}/build/${workspaceRootFolderName}.elf",
+			"miDebuggerPath": "arm-none-eabi-gdb",
 			"cwd": "${workspaceFolder}",
 			"externalConsole": true,
 			"internalConsoleOptions": "neverOpen",
-			"stopAtEntry": true,
+			"preLaunchTask": "gdbserver",
 			"setupCommands":
 			[
 				{
@@ -22,10 +21,25 @@
 				{
 					"description": "Reset target to get to a known state",
 					"text": "monitor reset"
-				},
+				}
+			]
+		},
+		{
+			"name": "x86",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/${workspaceRootFolderName}",
+			"miDebuggerPath": "gdb",
+			"cwd": "${workspaceFolder}",
+			"externalConsole": true,
+			"internalConsoleOptions": "neverOpen",
+			"stopAtEntry": true,
+			"preLaunchTask": "make",
+			"setupCommands":
+			[
 				{
-					"description": "Halt target to get to a known state",
-					"text": "monitor halt"
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing"
 				}
 			]
 		}

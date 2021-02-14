@@ -1,3 +1,5 @@
+// Example for STM32F4DISCOVERY development board
+
 #include "common/assert.h"
 #include "gpio/gpio.hpp"
 #include "dma/dma.hpp"
@@ -8,7 +10,7 @@
 
 using namespace hal;
 
-static void main_task(void *pvParameters)
+static void heartbeat_task(void *pvParameters)
 {
 	gpio *green_led = (gpio *)pvParameters;
 	while(1)
@@ -23,15 +25,15 @@ static void uart_write(uint8_t *buff, size_t size, void *ctx)
 {
 	uart *uart3 = (uart *)ctx;
 	
-	uart3->tx(buff, size);
+	uart3->write(buff, size);
 }
 
 int main(void)
 {
-	// Example for STM32F4DISCOVERY development board
-	static gpio green_led(3, 12, gpio::MODE_DO, 0);
-	static gpio uart3_tx_gpio(3, 8, gpio::MODE_AF, 0);
-	static gpio uart3_rx_gpio(1, 11, gpio::MODE_AF, 0);
+	systick::init();
+	static gpio green_led(3, 12, gpio::mode::DO, 0);
+	static gpio uart3_tx_gpio(3, 8, gpio::mode::AF, 0);
+	static gpio uart3_rx_gpio(1, 11, gpio::mode::AF, 0);
 	
 	static dma uart3_tx_dma(dma::dma_t::DMA_1, dma::stream_t::STREAM_3,
 		dma::ch_t::CH_4, dma::dir_t::DIR_MEM_TO_PERIPH, dma::inc_size_t::INC_SIZE_8);
@@ -43,8 +45,8 @@ int main(void)
 	
 	log().add_output(uart_write, &uart3);
 	
-	ASSERT(xTaskCreate(main_task, "main", configMINIMAL_STACK_SIZE * 2,
-		&green_led, tskIDLE_PRIORITY + 1, NULL) == pdPASS);
+	xTaskCreate(heartbeat_task, "heartbeat", configMINIMAL_STACK_SIZE + 30,
+		&green_led, 1, NULL);
 	
 	vTaskStartScheduler();
 }

@@ -1,5 +1,6 @@
 #include <string.h>
 #include <math.h>
+#include "common/assert.h"
 #include "ui.hpp"
 #include "rtc/rtc.hpp"
 #include "ul/syslog/syslog.hpp"

@@ -3,16 +3,7 @@
     [
         {
             "name": "lp-meteo",
-            "includePath":
-            [
-                "${workspaceFolder}/src/**"
-            ],
-            "defines":
-            [
-                "STM32F407xx",
-                "HSE_VALUE=8000000",
-                "ARM_MATH_CM4"
-            ]
+            "compileCommands": "build/compile_commands.json"
         }
     ],
     "version": 4

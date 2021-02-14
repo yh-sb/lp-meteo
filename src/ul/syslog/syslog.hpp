@@ -3,8 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdarg.h>
-
-#include "ul/list/list.hpp"
+#include <vector>
 #include "FreeRTOS.h"
 #include "semphr.h"
 
@@ -68,16 +67,15 @@ class syslog
 				return (cb == a.cb && ctx == a.ctx);
 			}
 		};
-		list<cb_ctx_t> cb_ctx_list;
+		std::vector<cb_ctx_t>cb_ctx_list;
 		
-		enum tag_t
-		{
-			DBG,
-			INF,
-			WRN,
-			ERR
-		};
+		enum tag_t {DBG, INF, WRN, ERR};
+		static constexpr const char *tags[] = {"(dbg) ", "(inf) ", "(wrn) ",
+			"(err) "};
 		char message[MAX_STRING_SIZE];
 		void print(tag_t tag, const char *format, va_list va);
+		size_t add_tag(char *str, uint8_t tag);
+		size_t add_eol(char *str);
+		size_t add_timestamp(char *str);
 };
 }
