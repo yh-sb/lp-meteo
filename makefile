@@ -1,10 +1,11 @@
-BUILD_DIR := build
-BUILD_TYPE := Debug
+BUILD_DIR ?= build
+BUILD_TYPE ?= Debug
 
 ifeq ($(OS),Windows_NT)
-CMAKE_GENERATOR := "MinGW Makefiles"
+CMAKE_GENERATOR ?= "MinGW Makefiles"
 else
-CMAKE_GENERATOR := "Unix Makefiles"
+CMAKE_GENERATOR ?= "Unix Makefiles"
+NUMBER_OF_PROCESSORS = $(shell grep -c ^processor /proc/cpuinfo)
 endif
 
 all:
