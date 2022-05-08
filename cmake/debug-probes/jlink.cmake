@@ -1,5 +1,6 @@
 if(NOT DEFINED JLINK_PARAMS)
-    message(FATAL_ERROR "JLINK_PARAMS is not defined. Example: -device STM32F407VG -if SWD")
+    message(FATAL_ERROR "JLINK_PARAMS is not defined.\n"
+        "Example: \"set(JLINK_PARAMS -device STM32F407VG -if SWD)\"")
 endif()
 
 add_custom_target(flash

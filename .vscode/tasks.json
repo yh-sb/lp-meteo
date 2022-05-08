@@ -5,8 +5,7 @@
         {
             "label": "make",
             "type": "shell",
-            "windows": {"command": "make"},
-            "linux": {"command": "make"},
+            "command": "make",
             "presentation":
             {
                 "reveal": "silent",
@@ -16,7 +15,7 @@
         {
             "label": "gdbserver",
             "type": "shell",
-            "windows": {"command": "start /min make debug"},
+            "windows": {"command": "start make debug"},
             "linux": {"command": "make debug &"},
             "dependsOn": ["make"],
             "presentation":

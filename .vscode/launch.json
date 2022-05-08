@@ -1,47 +1,28 @@
 {
-	"version": "0.2.0",
-	"configurations":
-	[
-		{
-			"name": "arm",
-			"type": "cppdbg",
-			"request": "launch",
-			"program": "${workspaceFolder}/build/${workspaceRootFolderName}.elf",
-			"miDebuggerPath": "arm-none-eabi-gdb",
-			"cwd": "${workspaceFolder}",
-			"externalConsole": true,
-			"internalConsoleOptions": "neverOpen",
-			"preLaunchTask": "gdbserver",
-			"setupCommands":
-			[
-				{
-					"description": "Connect GDB to GDB server",
-					"text": "target remote localhost:2331"
-				},
-				{
-					"description": "Reset target to get to a known state",
-					"text": "monitor reset"
-				}
-			]
-		},
-		{
-			"name": "x86",
-			"type": "cppdbg",
-			"request": "launch",
-			"program": "${workspaceFolder}/build/${workspaceRootFolderName}",
-			"miDebuggerPath": "gdb",
-			"cwd": "${workspaceFolder}",
-			"externalConsole": true,
-			"internalConsoleOptions": "neverOpen",
-			"stopAtEntry": true,
-			"preLaunchTask": "make",
-			"setupCommands":
-			[
-				{
-					"description": "Enable pretty-printing for gdb",
-					"text": "-enable-pretty-printing"
-				}
-			]
-		}
-	]
+    "version": "0.2.0",
+    "configurations":
+    [
+        {
+            "name": "arm",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/lp-meteo.elf",
+            "miDebuggerPath": "arm-none-eabi-gdb",
+            "cwd": "${workspaceFolder}",
+            "externalConsole": true,
+            "internalConsoleOptions": "neverOpen",
+            "preLaunchTask": "gdbserver",
+            "setupCommands":
+            [
+                {
+                    "description": "Connect GDB to GDB server",
+                    "text": "target remote localhost:2331"
+                },
+                {
+                    "description": "Reset target to get to a known state",
+                    "text": "monitor reset"
+                }
+            ]
+        }
+    ]
 }

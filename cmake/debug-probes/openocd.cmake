@@ -1,5 +1,6 @@
 if(NOT DEFINED OPENOCD_PARAMS)
-    message(FATAL_ERROR "OPENOCD_PARAMS is not defined. Example: -f interface/stlink-v2.cfg transport select hla_swd -f target/stm32f4x.cfg")
+    message(FATAL_ERROR "JLINK_PARAMS is not defined.\n"
+        "Example: \"set(OPENOCD_PARAMS -f interface/stlink-v2.cfg transport select hla_swd -f target/stm32f4x.cfg)\"")
 endif()
 
 add_custom_target(flash
