@@ -25,11 +25,11 @@ void tasks::gps(void *pvParameters)
         if(data.res != drv::nmea_reader::RES_OK || data.type != NMEA_GPRMC)
             continue;
         
-        make_zoned(data.gprmc.time, eet_timezone);
-        handle_dst(data.gprmc.time);
-        if(periph::rtc::is_valid(data.gprmc.time))
+        make_zoned(data.gprmc.date_time, eet_timezone);
+        handle_dst(data.gprmc.date_time);
+        if(periph::rtc::is_valid(data.gprmc.date_time))
         {
-            periph::rtc::set(data.gprmc.time);
+            periph::rtc::set(data.gprmc.date_time);
             time_sync_cnt++;
         }
     }
