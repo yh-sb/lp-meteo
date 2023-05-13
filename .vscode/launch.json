@@ -3,12 +3,12 @@
     "configurations":
     [
         {
-            "name": "arm",
+            "name": "GDB",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/lp-meteo.elf",
+            "cwd": "${workspaceFolder}/build",
             "miDebuggerPath": "arm-none-eabi-gdb",
-            "cwd": "${workspaceFolder}",
             "externalConsole": true,
             "internalConsoleOptions": "neverOpen",
             "preLaunchTask": "gdbserver",
