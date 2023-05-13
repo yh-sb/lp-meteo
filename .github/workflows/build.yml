@@ -2,34 +2,34 @@ name: build
 
 on: [push, pull_request]
 
-env:
-  gcc_arm_version: 10.3-2021.10
-
 jobs:
-  build-windows:
+  windows:
     runs-on: windows-latest
     steps:
-      - name: Install dependencies
-        run: |
-          # Installing GCC ARM none eabi
-          curl -L https://developer.arm.com/-/media/Files/downloads/gnu-rm/${{env.gcc_arm_version}}/gcc-arm-none-eabi-${{env.gcc_arm_version}}-win32.zip -o gcc-arm-none-eabi-${{env.gcc_arm_version}}-win32.zip
-          tar -xf gcc-arm-none-eabi-${{env.gcc_arm_version}}-win32.zip -C C:\
-          Add-Content $env:GITHUB_PATH "C:\gcc-arm-none-eabi-${{env.gcc_arm_version}}\bin"
-          # Installing Ninja
-          curl -L https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip -o ninja-win.zip
-          mkdir C:\ninja
-          tar -xf ninja-win.zip -C C:\ninja
-          Add-Content $env:GITHUB_PATH "C:\ninja"
-
       - name: Checkout with submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
+      - name: Cache Arm GNU Toolchain
+        uses: actions/cache@v3
+        id: cache
+        with:
+          key: ${{ runner.OS }}-cache-${{ hashFiles('.github/workflows/build.yml') }}
+          path: C:\arm-gnu-toolchain
+
+      - name: Install Arm GNU Toolchain
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          curl.exe -L https://developer.arm.com/-/media/Files/downloads/gnu/12.2.mpacbti-rel1/binrel/arm-gnu-toolchain-12.2.mpacbti-rel1-mingw-w64-i686-arm-none-eabi.zip -o arm-gnu-toolchain.zip
+          mkdir C:\arm-gnu-toolchain
+          tar -xf arm-gnu-toolchain.zip -C C:\arm-gnu-toolchain --strip-components=1
+
       - name: Build
         run: |
-          cmake . -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Debug
-          cmake --build build -j
+          # Set environment variables for Arm GNU Toolchain restored from GitHub cache
+          $env:Path = "C:\arm-gnu-toolchain\bin;" + $env:Path
+          make
 
       - name: Set artifacts suffix (if tag)
         if: startsWith(github.ref, 'refs/tags/') == true
@@ -49,22 +49,32 @@ jobs:
             build/lp-meteo.map
           if-no-files-found: error
 
-  build-linux:
-    runs-on: ubuntu-latest
+  linux:
+    runs-on: ubuntu-22.04
     steps:
-      - name: Install dependencies
-        run: |
-          wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/$gcc_arm_version/gcc-arm-none-eabi-$gcc_arm_version-x86_64-linux.tar.bz2
-          sudo tar -xjf gcc-arm-none-eabi-$gcc_arm_version-x86_64-linux.tar.bz2 -C /usr/share/
-          echo "/usr/share/gcc-arm-none-eabi-$gcc_arm_version/bin" >> $GITHUB_PATH
-          sudo apt update && sudo apt install ninja-build
-
       - name: Checkout with submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
+      - name: Cache Arm GNU Toolchain
+        uses: actions/cache@v3
+        id: cache
+        with:
+          key: ${{ runner.OS }}-cache-${{ hashFiles('.github/workflows/build.yml') }}
+          path: ~/arm-gnu-toolchain
+
+      - name: Install Arm GNU Toolchain
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          curl -L https://developer.arm.com/-/media/Files/downloads/gnu/12.2.mpacbti-rel1/binrel/arm-gnu-toolchain-12.2.mpacbti-rel1-x86_64-arm-none-eabi.tar.xz -o arm-gnu-toolchain.tar.xz
+          mkdir ~/arm-gnu-toolchain
+          tar -xf arm-gnu-toolchain.tar.xz -C ~/arm-gnu-toolchain --strip-components=1
+
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install ninja-build
+
       - name: Build
         run: |
-          cmake . -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Debug
-          cmake --build build -j
+          export PATH=~/arm-gnu-toolchain/bin:$PATH
+          make

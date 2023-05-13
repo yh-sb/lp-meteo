@@ -1,8 +1,10 @@
-# This makefile is used to shorten build commands. You can build the project
-# without it, just calling the CMake manually.
+# This makefile is used to shorten build commands.
+# You can build the project without it, just calling the CMake manually.
 
 BUILD_DIR ?= build
 BUILD_TYPE ?= Debug
+
+.PHONY: flash erase reset debug clean
 
 all:
 	cmake . -B$(BUILD_DIR) -G Ninja -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
