@@ -14,7 +14,7 @@ add_custom_target(reset
 )
 
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
-    execute_process(COMMAND cmd /c "where STM32_Programmer_CLI" OUTPUT_VARIABLE STM32_Programmer_CLI_PATH)
+    execute_process(COMMAND cmd /c "where.exe STM32_Programmer_CLI" OUTPUT_VARIABLE STM32_Programmer_CLI_PATH)
 else()
     execute_process(COMMAND sh "which STM32_Programmer_CLI" OUTPUT_VARIABLE STM32_Programmer_CLI_PATH)
 endif()
