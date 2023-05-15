@@ -22,7 +22,7 @@ make debug - Upload firmware to the target and start the debug session
 ```
 
 ## Requirements
-* [GNU Arm Embedded Toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads)
+* [GNU Arm Embedded Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
 * [CMake](https://cmake.org/download)
 * [Ninja](https://ninja-build.org)
 * [Make](https://winlibs.com)
