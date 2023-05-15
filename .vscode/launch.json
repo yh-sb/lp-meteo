@@ -3,7 +3,7 @@
     "configurations":
     [
         {
-            "name": "GDB",
+            "name": "ARM",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/lp-meteo.elf",

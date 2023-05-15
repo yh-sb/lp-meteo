@@ -6,7 +6,9 @@
             "label": "make",
             "type": "shell",
             "command": "make",
-            "presentation": { "showReuseMessage": false, "clear": true }
+            "presentation": { "showReuseMessage": false, "clear": true },
+            "group": { "kind": "build" },
+            "problemMatcher": ["$gcc"]
         },
         {
             "label": "gdbserver",
@@ -14,7 +16,8 @@
             "windows": {"command": "start make debug"},
             "linux": {"command": "make debug &"},
             "dependsOn": ["make"],
-            "presentation": { "showReuseMessage": false, "clear": true }
+            "presentation": { "showReuseMessage": false, "clear": true },
+            "group": { "kind": "build" }
         }
     ]
 }
