@@ -3,9 +3,7 @@
 [![build](https://github.com/yhsb2k/lp-meteo/workflows/build/badge.svg)](https://github.com/yhsb2k/lp-meteo/actions?workflow=build)
 [![license](https://img.shields.io/github/license/yhsb2k/lp-meteo?color=blue)](https://github.com/yhsb2k/lp-meteo/blob/master/LICENSE)
 
-![](https://github.com/r44083/lp-meteo/blob/master/image.jpg)
-
-https://github.com/r44083/lp-meteo
+![](https://github.com/yhsb2k/lp-meteo/blob/master/image.jpg)
 
 ## How to build
 ```
