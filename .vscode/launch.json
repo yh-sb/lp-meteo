@@ -10,7 +10,6 @@
             "cwd": "${workspaceFolder}/build",
             "miDebuggerPath": "arm-none-eabi-gdb",
             "externalConsole": true,
-            "internalConsoleOptions": "neverOpen",
             "preLaunchTask": "gdbserver",
             "showDisplayString": true,
             "visualizerFile": "${workspaceFolder}/.vscode/stl.gcc.natvis",
