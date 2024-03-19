@@ -19,9 +19,13 @@ make reset - Reset the target
 make debug - Upload firmware to the target and start the debug session
 ```
 
+## Debug
+Just start `ARM` debug configuration in [vscode](https://code.visualstudio.com)
+
 ## Requirements
 * [GNU Arm Embedded Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
 * [CMake](https://cmake.org/download)
 * [Ninja](https://ninja-build.org)
 * [Make](https://winlibs.com)
-* For Linux (apt): `apt install cmake ninja-build`
+* [JLink](https://www.segger.com/downloads/jlink) + [ST-LINK On-Board as JLink probe](https://www.segger.com/products/debug-probes/j-link/models/other-j-links/st-link-on-board/#getting-started-with-st-link-on-board)
+* For Linux (apt): `apt install cmake ninja-build gcc-arm-none-eabi`
