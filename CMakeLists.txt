@@ -28,8 +28,10 @@ set(DEVICE_NAME STM32F407xx)
 add_subdirectory(third_party/CMSIS)
 #add_subdirectory(third_party/CMSIS/DSP)
 
+add_library(freertos_config INTERFACE)
+target_include_directories(freertos_config SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "")
-set(FREERTOS_CONFIG_FILE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "")
+set(FREERTOS_HEAP 4 CACHE STRING "")
 add_subdirectory(third_party/FreeRTOS-Kernel)
 
 set(NMEA_BUILD_SHARED_LIB OFF CACHE BOOL "")
