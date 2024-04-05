@@ -75,8 +75,10 @@ i2c::i2c(i2c_t i2c, uint32_t baud, dma &dma_tx, dma &dma_rx, gpio &sda,
     
     NVIC_ClearPendingIRQ(i2c_priv::irqn_event[_i2c]);
     NVIC_ClearPendingIRQ(i2c_priv::irqn_error[_i2c]);
-    NVIC_SetPriority(i2c_priv::irqn_event[_i2c], 5);
-    NVIC_SetPriority(i2c_priv::irqn_error[_i2c], 5);
+    NVIC_SetPriority(i2c_priv::irqn_event[_i2c],
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 2);
+    NVIC_SetPriority(i2c_priv::irqn_error[_i2c],
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 2);
     NVIC_EnableIRQ(i2c_priv::irqn_event[_i2c]);
     NVIC_EnableIRQ(i2c_priv::irqn_error[_i2c]);
 }

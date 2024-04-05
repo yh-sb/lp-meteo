@@ -9,9 +9,9 @@ constexpr size_t neo7m_nmea_msg_number = 12;
 nmea_reader::nmea_reader(periph::uart &uart, UBaseType_t task_priority):
     _uart(uart)
 {
-    assert(xTaskCreate(this->task, "nmea_reader", configMINIMAL_STACK_SIZE + 500,
+    assert(xTaskCreate(this->task, "nmea_reader", configMINIMAL_STACK_SIZE + 700,
         this, task_priority, &task_hndlr) == pdPASS);
-        
+    
     assert(queue = xQueueCreate(neo7m_nmea_msg_number, sizeof(queue_t)));
 }
 

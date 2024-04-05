@@ -4,6 +4,7 @@
 #include "dma_priv.hpp"
 #include "stm32f4xx.h"
 #include "core_cm4.h"
+#include "FreeRTOS.h"
 
 using namespace periph;
 
@@ -66,7 +67,8 @@ dma::dma(dma_t dma, stream_t str, ch_t ch, dir_t dir, inc_size_t inc_size):
     stream->CR |= DMA_SxCR_TCIE | DMA_SxCR_HTIE | DMA_SxCR_TEIE |
         DMA_SxCR_DMEIE;
     
-    NVIC_SetPriority(dma_priv::irqn[_dma][_str], 3);
+    NVIC_SetPriority(dma_priv::irqn[_dma][_str],
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 4);
     NVIC_EnableIRQ(dma_priv::irqn[_dma][_str]);
 }
 

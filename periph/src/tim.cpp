@@ -6,6 +6,7 @@
 #include "tim_priv.hpp"
 #include "stm32f4xx.h"
 #include "core_cm4.h"
+#include "FreeRTOS.h"
 
 using namespace periph;
 
@@ -32,7 +33,8 @@ tim::tim(tim_t tim):
     // Enable interrupt
     tim_priv::tim[_tim]->DIER |= TIM_DIER_UIE;
     
-    NVIC_SetPriority(tim_priv::irqn[_tim], 1);
+    NVIC_SetPriority(tim_priv::irqn[_tim],
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_EnableIRQ(tim_priv::irqn[_tim]);
 }
 

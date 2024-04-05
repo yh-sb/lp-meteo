@@ -4,6 +4,7 @@
 #include "periph/gpio.hpp"
 #include "stm32f4xx.h"
 #include "core_cm4.h"
+#include "FreeRTOS.h"
 
 using namespace periph;
 
@@ -55,7 +56,7 @@ exti::exti(gpio &gpio, trigger_t trigger):
     obj_list[pin] = this;
     
     NVIC_ClearPendingIRQ(irqn[pin]);
-    NVIC_SetPriority(irqn[pin], 2);
+    NVIC_SetPriority(irqn[pin], configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_EnableIRQ(irqn[pin]);
 }
 

@@ -93,7 +93,8 @@ spi::spi(spi_t spi, uint32_t baud, cpol_t cpol, cpha_t cpha,
     rx_dma.src((uint8_t *)&spi_reg->DR);
     
     NVIC_ClearPendingIRQ(spi_priv::irqn[_spi]);
-    NVIC_SetPriority(spi_priv::irqn[_spi], 4);
+    NVIC_SetPriority(spi_priv::irqn[_spi],
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
     NVIC_EnableIRQ(spi_priv::irqn[_spi]);
 }
 

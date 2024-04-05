@@ -90,7 +90,8 @@ uart::uart(uart_t uart, uint32_t baud, stopbit_t stopbit, parity_t parity,
         USART_CR3_ONEBIT;
     
     NVIC_ClearPendingIRQ(uart_priv::irqn[_uart]);
-    NVIC_SetPriority(uart_priv::irqn[_uart], 6);
+    NVIC_SetPriority(uart_priv::irqn[_uart],
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 3);
     NVIC_EnableIRQ(uart_priv::irqn[_uart]);
 }
 

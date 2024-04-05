@@ -4,6 +4,7 @@
 #include "periph/rtc.hpp"
 #include "periph/systick.hpp"
 #include "stm32f4xx.h"
+#include "FreeRTOS.h"
 
 using namespace periph;
 
@@ -45,7 +46,8 @@ int8_t rtc::init(clk_t clk)
         return -1;
     
     NVIC_ClearPendingIRQ(RTC_Alarm_IRQn);
-    NVIC_SetPriority(RTC_Alarm_IRQn, 7);
+    NVIC_SetPriority(RTC_Alarm_IRQn,
+        configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
     NVIC_EnableIRQ(RTC_Alarm_IRQn);
     
     return 0;

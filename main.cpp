@@ -101,14 +101,14 @@ int main(void)
     assert(ui_queue);
     
     assert(xTaskCreate(safety_task, "safety", configMINIMAL_STACK_SIZE,
-        &green_led, tskIDLE_PRIORITY + 5, nullptr) == pdPASS);
+        &green_led, tskIDLE_PRIORITY + 4, nullptr) == pdPASS);
     
     static tasks::dht11_ctx_t dht11_ctx = { .to_ui = ui_queue, .dht11 = &dht11 };
     assert(xTaskCreate(tasks::dht11, "dht11", configMINIMAL_STACK_SIZE,
         &dht11_ctx, tskIDLE_PRIORITY + 4, nullptr) == pdPASS);
     
     static tasks::ds18b20_ctx_t ds18b20_ctx = { .to_ui = ui_queue, ._ds18b20 = &_ds18b20 };
-    assert(xTaskCreate(tasks::ds18b20, "ds18b20", configMINIMAL_STACK_SIZE,
+    assert(xTaskCreate(tasks::ds18b20, "ds18b20", configMINIMAL_STACK_SIZE + 50,
         &ds18b20_ctx, tskIDLE_PRIORITY + 3, nullptr) == pdPASS);
     
     static tasks::gps_ctx_t gps_ctx = { .nmea = &gps };
@@ -116,7 +116,7 @@ int main(void)
         &gps_ctx, tskIDLE_PRIORITY + 2, nullptr) == pdPASS);
     
     static tasks::ui_ctx_t ui_ctx = { .to_ui = ui_queue, .matrix = &matrix };
-    assert(xTaskCreate(tasks::ui, "ui", configMINIMAL_STACK_SIZE + 50,
+    assert(xTaskCreate(tasks::ui, "ui", configMINIMAL_STACK_SIZE + 100,
         &ui_ctx, tskIDLE_PRIORITY + 1, nullptr) == pdPASS);
     
     vTaskStartScheduler();
