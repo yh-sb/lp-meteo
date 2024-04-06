@@ -7,12 +7,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout with submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Cache Arm GNU Toolchain
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache
         with:
           key: ${{ runner.OS }}-cache-${{ hashFiles('.github/workflows/build.yml') }}
@@ -21,9 +21,12 @@ jobs:
       - name: Install Arm GNU Toolchain
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          curl.exe -L https://developer.arm.com/-/media/Files/downloads/gnu/12.2.mpacbti-rel1/binrel/arm-gnu-toolchain-12.2.mpacbti-rel1-mingw-w64-i686-arm-none-eabi.zip -o arm-gnu-toolchain.zip
+          curl.exe -L https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-mingw-w64-i686-arm-none-eabi.zip -o arm-gnu-toolchain.zip
           mkdir C:\arm-gnu-toolchain
           tar -xf arm-gnu-toolchain.zip -C C:\arm-gnu-toolchain --strip-components=1
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Build
         run: |
@@ -40,7 +43,7 @@ jobs:
         run: Add-Content $env:GITHUB_ENV "git_suffix=$(Write-Output "$(git rev-parse --abbrev-ref HEAD)-$(git rev-parse --short HEAD)")"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lp-meteo-${{env.git_suffix}}
           path: |
@@ -53,12 +56,12 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout with submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Cache Arm GNU Toolchain
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache
         with:
           key: ${{ runner.OS }}-cache-${{ hashFiles('.github/workflows/build.yml') }}
@@ -67,7 +70,7 @@ jobs:
       - name: Install Arm GNU Toolchain
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          curl -L https://developer.arm.com/-/media/Files/downloads/gnu/12.2.mpacbti-rel1/binrel/arm-gnu-toolchain-12.2.mpacbti-rel1-x86_64-arm-none-eabi.tar.xz -o arm-gnu-toolchain.tar.xz
+          curl -L https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz -o arm-gnu-toolchain.tar.xz
           mkdir ~/arm-gnu-toolchain
           tar -xf arm-gnu-toolchain.tar.xz -C ~/arm-gnu-toolchain --strip-components=1
 
